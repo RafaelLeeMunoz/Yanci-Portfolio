@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Yanci Tong — Healthcare Professional & Health Informatics Specialist" />
+  <title>Yanci Tong · Health Informatics</title>
+
+  <!-- Fonts: Cormorant Garamond (display) + Outfit (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ================================================================
+       NAVIGATION
+  ================================================================ -->
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo" aria-label="Back to top">
+        <span class="logo-monogram">YT</span>
+      </a>
+      <ul class="nav-links" id="navLinks" role="list">
+        <li><a href="#about"      class="nav-link">About</a></li>
+        <li><a href="#experience" class="nav-link">Experience</a></li>
+        <li><a href="#education"  class="nav-link">Education</a></li>
+        <li><a href="#skills"     class="nav-link">Skills</a></li>
+        <li><a href="#creative"   class="nav-link">Creative</a></li>
+        <li><a href="#contact"    class="nav-link nav-cta">Connect</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle mobile menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+
+  <!-- ================================================================
+       HERO
+  ================================================================ -->
+  <section id="hero" class="hero" aria-labelledby="hero-heading">
+
+    <!-- Background layer -->
+    <div class="hero-bg" aria-hidden="true">
+      <svg class="hex-bg-pattern" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="heroPat" x="0" y="0" width="66" height="57.2" patternUnits="userSpaceOnUse">
+            <polygon points="33,2 64,19 64,52 33,69 2,52 2,19"
+              fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+            <polygon points="33,9 57,23 57,49 33,62 9,49 9,23"
+              fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#heroPat)"/>
+      </svg>
+      <div class="hero-orb orb-a"></div>
+      <div class="hero-orb orb-b"></div>
+      <div class="hero-orb orb-c"></div>
+    </div>
+
+    <div class="container hero-layout">
+
+      <!-- Left: Text content -->
+      <div class="hero-text" data-animate="hero-in">
+        <p class="hero-eyebrow">Healthcare · Informatics · Innovation</p>
+        <!-- REPLACE: Update name if needed -->
+        <h1 class="hero-name" id="hero-heading">Yanci Tong</h1>
+        <p class="hero-subtitle">
+          Healthcare Professional
+          <span class="subtitle-dot" aria-hidden="true">·</span>
+          Health Informatics Specialist
+        </p>
+        <p class="hero-tagline">
+          Bridging clinical insight with data-driven systems to advance
+          patient outcomes and operational excellence.
+        </p>
+        <div class="hero-actions">
+          <a href="#experience" class="btn btn-white">View Experience</a>
+          <a href="#contact"    class="btn btn-ghost">Connect With Me</a>
+        </div>
+      </div>
+
+      <!-- Right: Floating icon cluster -->
+      <div class="hero-visual" data-animate="hero-visual" aria-hidden="true">
+        <div class="icon-cluster">
+          <!-- Center: ECG / heartbeat -->
+          <div class="hex-node node-center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <polyline points="2,12 5,12 7.5,5 10.5,19 13,9 15,15 17.5,12 22,12"/>
+            </svg>
+          </div>
+          <!-- Top right: database -->
+          <div class="hex-node node-tr">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/>
+              <path d="M21 12c0 1.66-4.03 3-9 3S3 13.66 3 12"/>
+              <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+            </svg>
+          </div>
+          <!-- Bottom left: shield -->
+          <div class="hex-node node-bl">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <!-- Bottom right: pill / medicine -->
+          <div class="hex-node node-br">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M10.5 20H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10.5"/>
+              <circle cx="17" cy="17" r="5"/>
+              <path d="m15 19 4-4"/>
+            </svg>
+          </div>
+          <!-- Top left: DNA -->
+          <div class="hex-node node-tl">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M2 15c6.667-6 13.333 0 20-6M2 9c6.667 6 13.333 0 20 6"/>
+              <path d="M7 11.5v1M17 11.5v1M2 15h20M2 9h20"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Scroll nudge -->
+    <a href="#about" class="scroll-cue" aria-label="Scroll down to About section">
+      <span class="scroll-line"></span>
+      <span class="scroll-label">Scroll</span>
+    </a>
+  </section>
+
+
+  <!-- ================================================================
+       ABOUT
+  ================================================================ -->
+  <section id="about" class="section about-section" aria-labelledby="about-heading">
+    <div class="container">
+
+      <div class="section-header" data-animate="fade-up">
+        <p class="eyebrow">Background</p>
+        <h2 class="section-title" id="about-heading">About Me</h2>
+      </div>
+
+      <div class="about-grid">
+
+        <div class="about-copy" data-animate="fade-up" data-delay="80">
+          <p class="about-lead">
+            I am a healthcare professional with a Master's degree in Health Informatics,
+            dedicated to transforming how health systems collect, interpret, and act on
+            information to improve the lives of patients.
+          </p>
+          <!-- REPLACE: Customize the following paragraphs with your own professional summary -->
+          <p class="about-body">
+            With experience spanning clinical operations, electronic health record systems,
+            and data-driven quality improvement, I bridge the gap between patient care and
+            health technology. My work is rooted in the belief that thoughtful systems design
+            and the intelligent use of data can meaningfully improve both patient outcomes
+            and provider workflows.
+          </p>
+          <p class="about-body">
+            I bring a collaborative, cross-functional approach to every project —
+            translating complex health data into clear, actionable insights for clinical
+            teams, administrators, and technology stakeholders.
+          </p>
+          <div class="about-quote-block">
+            <blockquote class="about-personal">
+              Outside of healthcare, I find balance and joy in arts and crafts —
+              a creative outlet that keeps my problem-solving mind curious and grounded.
+            </blockquote>
+          </div>
+        </div>
+
+        <aside class="about-cards" data-animate="fade-up" data-delay="180" aria-label="Quick facts">
+          <div class="fact-card glass-card">
+            <div class="fact-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+              </svg>
+            </div>
+            <div>
+              <p class="fact-label">Degree</p>
+              <!-- REPLACE: Update university name below -->
+              <p class="fact-value">M.S. Health Informatics</p>
+            </div>
+          </div>
+          <div class="fact-card glass-card">
+            <div class="fact-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <div>
+              <p class="fact-label">Focus</p>
+              <p class="fact-value">Health Systems & Analytics</p>
+            </div>
+          </div>
+          <div class="fact-card glass-card">
+            <div class="fact-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <div>
+              <p class="fact-label">Approach</p>
+              <p class="fact-value">Patient-Centered & Data-Driven</p>
+            </div>
+          </div>
+          <div class="fact-card glass-card">
+            <div class="fact-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                <path d="M2 2l7.586 7.586"/>
+                <circle cx="11" cy="11" r="2"/>
+              </svg>
+            </div>
+            <div>
+              <p class="fact-label">Creative Side</p>
+              <p class="fact-value">Arts & Crafts Enthusiast</p>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ================================================================
+       EXPERIENCE
+  ================================================================ -->
+  <section id="experience" class="section experience-section" aria-labelledby="exp-heading">
+    <!-- Subtle background hex pattern -->
+    <div class="exp-hex-bg" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+        <defs>
+          <pattern id="expPat" x="0" y="0" width="88" height="76" patternUnits="userSpaceOnUse">
+            <polygon points="44,3 85,26 85,72 44,95 3,72 3,26"
+              fill="none" stroke="rgba(78,205,196,0.07)" stroke-width="1.2"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#expPat)"/>
+      </svg>
+    </div>
+
+    <div class="container">
+      <div class="section-header" data-animate="fade-up">
+        <p class="eyebrow">Career</p>
+        <h2 class="section-title" id="exp-heading">Experience</h2>
+      </div>
+
+      <div class="timeline">
+
+        <!-- ---- Role 1 ---- -->
+        <article class="timeline-item" data-animate="fade-up" data-delay="0">
+          <div class="tl-marker" aria-hidden="true">
+            <div class="tl-dot"></div>
+            <div class="tl-track"></div>
+          </div>
+          <div class="tl-card glass-card">
+            <header class="tl-header">
+              <div class="tl-title-block">
+                <!-- REPLACE: Job title -->
+                <h3 class="job-title">[Health Informatics Analyst]</h3>
+                <!-- REPLACE: Organization name -->
+                <p class="job-org">[Healthcare Organization Name]</p>
+              </div>
+              <div class="tl-meta">
+                <!-- REPLACE: Employment period -->
+                <span class="job-period">[2022 – Present]</span>
+                <span class="job-badge">Full-time</span>
+              </div>
+            </header>
+            <ul class="achievements">
+              <!-- REPLACE: Replace each bullet with your actual achievements -->
+              <li>Led implementation of EHR workflow improvements reducing documentation time by an estimated 20% across clinical departments.</li>
+              <li>Analyzed patient data trends to support quality improvement initiatives and population health strategies.</li>
+              <li>Collaborated cross-functionally with clinical staff, IT teams, and administration to align technology solutions with patient care goals.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ---- Role 2 ---- -->
+        <article class="timeline-item" data-animate="fade-up" data-delay="100">
+          <div class="tl-marker" aria-hidden="true">
+            <div class="tl-dot"></div>
+            <div class="tl-track"></div>
+          </div>
+          <div class="tl-card glass-card">
+            <header class="tl-header">
+              <div class="tl-title-block">
+                <!-- REPLACE: Job title -->
+                <h3 class="job-title">[Clinical Data Coordinator]</h3>
+                <!-- REPLACE: Organization name -->
+                <p class="job-org">[Hospital System / Clinic Name]</p>
+              </div>
+              <div class="tl-meta">
+                <!-- REPLACE: Employment period -->
+                <span class="job-period">[2020 – 2022]</span>
+                <span class="job-badge">Full-time</span>
+              </div>
+            </header>
+            <ul class="achievements">
+              <li>Managed and maintained clinical databases ensuring data accuracy, integrity, and HIPAA compliance across all systems.</li>
+              <li>Developed dashboards and reports to support clinical decision-making and operational planning for department leadership.</li>
+              <li>Trained staff on EHR best practices, improving data entry consistency and reducing documentation errors.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ---- Role 3 ---- -->
+        <article class="timeline-item" data-animate="fade-up" data-delay="200">
+          <div class="tl-marker" aria-hidden="true">
+            <div class="tl-dot"></div>
+            <div class="tl-track"></div>
+          </div>
+          <div class="tl-card glass-card">
+            <header class="tl-header">
+              <div class="tl-title-block">
+                <!-- REPLACE: Job title -->
+                <h3 class="job-title">[Healthcare Operations Associate]</h3>
+                <!-- REPLACE: Organization name -->
+                <p class="job-org">[Healthcare Organization Name]</p>
+              </div>
+              <div class="tl-meta">
+                <!-- REPLACE: Employment period -->
+                <span class="job-period">[2018 – 2020]</span>
+                <span class="job-badge">Full-time</span>
+              </div>
+            </header>
+            <ul class="achievements">
+              <li>Supported patient intake and care coordination workflows, improving scheduling efficiency and patient satisfaction outcomes.</li>
+              <li>Assisted in process improvement projects to streamline administrative operations across outpatient departments.</li>
+              <li>Served as liaison between clinical teams and administration to ensure continuity and quality of patient care.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ---- Role 4 (Internship) ---- -->
+        <article class="timeline-item timeline-item--last" data-animate="fade-up" data-delay="300">
+          <div class="tl-marker" aria-hidden="true">
+            <div class="tl-dot"></div>
+          </div>
+          <div class="tl-card glass-card">
+            <header class="tl-header">
+              <div class="tl-title-block">
+                <!-- REPLACE: Job title -->
+                <h3 class="job-title">[Graduate Health Informatics Intern]</h3>
+                <!-- REPLACE: Organization name -->
+                <p class="job-org">[University Health Center / Research Lab]</p>
+              </div>
+              <div class="tl-meta">
+                <!-- REPLACE: Employment period -->
+                <span class="job-period">[2017 – 2018]</span>
+                <span class="job-badge job-badge--alt">Internship</span>
+              </div>
+            </header>
+            <ul class="achievements">
+              <li>Contributed to a research project analyzing patient population health data using SQL and analytics tools.</li>
+              <li>Assisted in evaluating health information systems and presenting findings to faculty and clinical leadership.</li>
+            </ul>
+          </div>
+        </article>
+
+      </div><!-- /timeline -->
+    </div>
+  </section>
+
+
+  <!-- ================================================================
+       EDUCATION & CREDENTIALS
+  ================================================================ -->
+  <section id="education" class="section education-section" aria-labelledby="edu-heading">
+    <div class="container">
+      <div class="section-header" data-animate="fade-up">
+        <p class="eyebrow">Credentials</p>
+        <h2 class="section-title" id="edu-heading">Education & Training</h2>
+      </div>
+
+      <div class="edu-grid">
+
+        <!-- Featured: Master's -->
+        <div class="edu-card edu-card--featured glass-card" data-animate="fade-up" data-delay="0">
+          <div class="edu-icon edu-icon--featured" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+              <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            </svg>
+          </div>
+          <div class="edu-body">
+            <span class="edu-level">Master of Science</span>
+            <h3 class="edu-degree">Health Informatics</h3>
+            <!-- REPLACE: University name -->
+            <p class="edu-school">[University Name]</p>
+            <!-- REPLACE: Graduation year -->
+            <p class="edu-year">Graduated [Year]</p>
+            <p class="edu-desc">
+              Specialized coursework in clinical information systems, health data analytics,
+              EHR implementation, interoperability standards (HL7, FHIR), population health
+              management, and healthcare leadership.
+            </p>
+          </div>
+        </div>
+
+        <!-- Undergrad -->
+        <div class="edu-card glass-card" data-animate="fade-up" data-delay="100">
+          <div class="edu-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <rect x="2" y="7" width="20" height="14" rx="2"/>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
+          </div>
+          <div class="edu-body">
+            <span class="edu-level">Bachelor of Science</span>
+            <!-- REPLACE: Undergraduate degree and university -->
+            <h3 class="edu-degree">[Undergraduate Degree]</h3>
+            <p class="edu-school">[University Name]</p>
+            <p class="edu-year">Graduated [Year]</p>
+          </div>
+        </div>
+
+        <!-- Certification 1 -->
+        <div class="edu-card glass-card" data-animate="fade-up" data-delay="150">
+          <div class="edu-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <circle cx="12" cy="8" r="6"/>
+              <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+            </svg>
+          </div>
+          <div class="edu-body">
+            <span class="edu-level">Certification</span>
+            <!-- REPLACE: Certification name and issuing org -->
+            <h3 class="edu-degree">[Healthcare IT Certification]</h3>
+            <p class="edu-school">[Issuing Organization]</p>
+            <p class="edu-year">[Year]</p>
+          </div>
+        </div>
+
+        <!-- Certification 2 -->
+        <div class="edu-card glass-card" data-animate="fade-up" data-delay="200">
+          <div class="edu-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <circle cx="12" cy="8" r="6"/>
+              <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+            </svg>
+          </div>
+          <div class="edu-body">
+            <span class="edu-level">Certification</span>
+            <!-- REPLACE: Additional certification -->
+            <h3 class="edu-degree">[Additional Certification]</h3>
+            <p class="edu-school">[Issuing Organization]</p>
+            <p class="edu-year">[Year]</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ================================================================
+       SKILLS
+  ================================================================ -->
+  <section id="skills" class="section skills-section" aria-labelledby="skills-heading">
+    <div class="container">
+      <div class="section-header" data-animate="fade-up">
+        <p class="eyebrow">Expertise</p>
+        <h2 class="section-title" id="skills-heading">Skills & Capabilities</h2>
+      </div>
+
+      <div class="skills-grid">
+
+        <div class="skill-cat" data-animate="fade-up" data-delay="0">
+          <div class="skill-cat-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+          </div>
+          <h3 class="skill-cat-name">Health Informatics</h3>
+          <div class="pill-cluster">
+            <span class="pill">Clinical Informatics</span>
+            <span class="pill">HL7 / FHIR</span>
+            <span class="pill">Interoperability</span>
+            <span class="pill">Population Health</span>
+            <span class="pill">Health IT Standards</span>
+          </div>
+        </div>
+
+        <div class="skill-cat" data-animate="fade-up" data-delay="60">
+          <div class="skill-cat-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </div>
+          <h3 class="skill-cat-name">Healthcare Systems</h3>
+          <div class="pill-cluster">
+            <!-- REPLACE: Update EHR systems you actually know -->
+            <span class="pill">EHR / EMR</span>
+            <span class="pill">Epic</span>
+            <span class="pill">Cerner</span>
+            <span class="pill">Clinical Workflows</span>
+            <span class="pill">Care Coordination</span>
+          </div>
+        </div>
+
+        <div class="skill-cat" data-animate="fade-up" data-delay="120">
+          <div class="skill-cat-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <h3 class="skill-cat-name">Data & Analytics</h3>
+          <div class="pill-cluster">
+            <!-- REPLACE: Update to match your actual data tools -->
+            <span class="pill">SQL</span>
+            <span class="pill">Tableau</span>
+            <span class="pill">Excel</span>
+            <span class="pill">Data Visualization</span>
+            <span class="pill">Quality Metrics</span>
+          </div>
+        </div>
+
+        <div class="skill-cat" data-animate="fade-up" data-delay="180">
+          <div class="skill-cat-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            </svg>
+          </div>
+          <h3 class="skill-cat-name">Process Improvement</h3>
+          <div class="pill-cluster">
+            <span class="pill">Lean Healthcare</span>
+            <span class="pill">QI Methodologies</span>
+            <span class="pill">Workflow Analysis</span>
+            <span class="pill">Change Management</span>
+            <span class="pill">Project Management</span>
+          </div>
+        </div>
+
+        <div class="skill-cat" data-animate="fade-up" data-delay="240">
+          <div class="skill-cat-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h3 class="skill-cat-name">Collaboration</h3>
+          <div class="pill-cluster">
+            <span class="pill">Cross-functional Teams</span>
+            <span class="pill">Stakeholder Engagement</span>
+            <span class="pill">Clinical Communication</span>
+            <span class="pill">Training & Education</span>
+          </div>
+        </div>
+
+        <div class="skill-cat" data-animate="fade-up" data-delay="300">
+          <div class="skill-cat-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <h3 class="skill-cat-name">Tools & Platforms</h3>
+          <div class="pill-cluster">
+            <!-- REPLACE: Update with your actual tools -->
+            <span class="pill">Microsoft Office</span>
+            <span class="pill">REDCap</span>
+            <span class="pill">Google Workspace</span>
+            <span class="pill">Jira</span>
+            <span class="pill">[Add Tool]</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ================================================================
+       CREATIVE / ARTS & CRAFTS
+  ================================================================ -->
+  <section id="creative" class="section creative-section" aria-labelledby="creative-heading">
+    <div class="container">
+      <div class="section-header" data-animate="fade-up">
+        <p class="eyebrow">Personal</p>
+        <h2 class="section-title" id="creative-heading">Arts & Crafts</h2>
+        <p class="section-subtitle">A quiet creative practice that balances analytical work with handmade artistry.</p>
+      </div>
+
+      <div class="craft-gallery">
+
+        <!-- REPLACE: Replace .craft-placeholder divs with actual <img> tags -->
+        <!-- Example: <img src="images/craft-1.jpg" alt="Descriptive caption" class="craft-img"> -->
+
+        <figure class="craft-figure" data-animate="fade-up" data-delay="0">
+          <div class="craft-img-wrap">
+            <div class="craft-swatch sw-1" role="img" aria-label="Craft image placeholder 1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+                <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                <circle cx="11" cy="11" r="2"/>
+              </svg>
+            </div>
+          </div>
+          <!-- REPLACE: Add your caption -->
+          <figcaption class="craft-cap">[Handmade piece — add your caption here]</figcaption>
+        </figure>
+
+        <figure class="craft-figure" data-animate="fade-up" data-delay="80">
+          <div class="craft-img-wrap">
+            <div class="craft-swatch sw-2" role="img" aria-label="Craft image placeholder 2">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </div>
+          </div>
+          <!-- REPLACE: Add your caption -->
+          <figcaption class="craft-cap">[Creative work — add your caption here]</figcaption>
+        </figure>
+
+        <figure class="craft-figure" data-animate="fade-up" data-delay="160">
+          <div class="craft-img-wrap">
+            <div class="craft-swatch sw-3" role="img" aria-label="Craft image placeholder 3">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </div>
+          </div>
+          <!-- REPLACE: Add your caption -->
+          <figcaption class="craft-cap">[Handcrafted item — add your caption here]</figcaption>
+        </figure>
+
+        <figure class="craft-figure" data-animate="fade-up" data-delay="240">
+          <div class="craft-img-wrap">
+            <div class="craft-swatch sw-4" role="img" aria-label="Craft image placeholder 4">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/>
+              </svg>
+            </div>
+          </div>
+          <!-- REPLACE: Add your caption -->
+          <figcaption class="craft-cap">[Art piece — add your caption here]</figcaption>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ================================================================
+       CONTACT
+  ================================================================ -->
+  <section id="contact" class="section contact-section" aria-labelledby="contact-heading">
+    <div class="contact-hex-bg" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+        <defs>
+          <pattern id="ctPat" x="0" y="0" width="66" height="57" patternUnits="userSpaceOnUse">
+            <polygon points="33,2 64,19 64,51 33,68 2,51 2,19"
+              fill="none" stroke="rgba(255,255,255,0.09)" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#ctPat)"/>
+      </svg>
+      <div class="contact-glow" aria-hidden="true"></div>
+    </div>
+
+    <div class="container contact-inner" data-animate="fade-up">
+      <p class="eyebrow eyebrow--light">Get In Touch</p>
+      <h2 class="section-title section-title--light" id="contact-heading">Open to Opportunities</h2>
+      <p class="contact-desc">
+        Whether you're looking for a health informatics specialist, want to collaborate
+        on a project, or simply want to connect — I'd love to hear from you.
+      </p>
+
+      <div class="contact-cards">
+
+        <!-- REPLACE: Update email address in both href and text -->
+        <a href="mailto:your@email.com" class="contact-card">
+          <span class="cc-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </span>
+          <span class="cc-label">Email</span>
+          <span class="cc-value">your@email.com</span>
+        </a>
+
+        <!-- REPLACE: Update LinkedIn URL and display text -->
+        <a href="https://linkedin.com/in/yancitong" class="contact-card" target="_blank" rel="noopener noreferrer">
+          <span class="cc-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+              <rect x="2" y="9" width="4" height="12"/>
+              <circle cx="4" cy="4" r="2"/>
+            </svg>
+          </span>
+          <span class="cc-label">LinkedIn</span>
+          <span class="cc-value">linkedin.com/in/yancitong</span>
+        </a>
+
+        <!-- REPLACE: Update path to your actual resume PDF -->
+        <a href="resume.pdf" class="contact-card" target="_blank" rel="noopener noreferrer">
+          <span class="cc-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </span>
+          <span class="cc-label">Résumé</span>
+          <span class="cc-value">Download PDF</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ================================================================
+       FOOTER
+  ================================================================ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <!-- REPLACE: Update name if needed -->
+      <p class="footer-name">Yanci Tong</p>
+      <p class="footer-copy">
+        &copy; <span id="footerYear"></span> Yanci Tong. All rights reserved.
+      </p>
+      <div class="footer-links">
+        <!-- REPLACE: Update LinkedIn URL -->
+        <a href="https://linkedin.com/in/yancitong" class="footer-link" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+            <rect x="2" y="9" width="4" height="12"/>
+            <circle cx="4" cy="4" r="2"/>
+          </svg>
+        </a>
+        <!-- REPLACE: Update email address -->
+        <a href="mailto:your@email.com" class="footer-link" aria-label="Send email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
