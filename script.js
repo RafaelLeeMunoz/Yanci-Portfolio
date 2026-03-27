@@ -11,6 +11,7 @@
   const $  = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
+
   /* ====================================================================
      1. FOOTER YEAR
   ==================================================================== */
@@ -19,18 +20,17 @@
 
 
   /* ====================================================================
-     2. NAVBAR: scroll state + scrolled class
+     2. NAVBAR — scrolled state
   ==================================================================== */
   const navbar = $('#navbar');
 
   function updateNavbar() {
     if (!navbar) return;
-    const scrolled = window.scrollY > 60;
-    navbar.classList.toggle('is-scrolled', scrolled);
+    navbar.classList.toggle('is-scrolled', window.scrollY > 60);
   }
 
   window.addEventListener('scroll', updateNavbar, { passive: true });
-  updateNavbar(); // run once on load
+  updateNavbar();
 
 
   /* ====================================================================
@@ -53,7 +53,7 @@
       navToggle.setAttribute('aria-expanded', String(open));
     });
 
-    // Close when a link is tapped
+    // Close when a nav link is tapped
     $$('.nav-link', navLinks).forEach(link =>
       link.addEventListener('click', closeMenu)
     );
@@ -77,10 +77,10 @@
   const navAnchors = $$('.nav-link[href^="#"]');
 
   function setActiveLink() {
-    const offset = (navbar ? navbar.offsetHeight : 80) + 20;
+    const offset    = (navbar ? navbar.offsetHeight : 80) + 20;
     const scrollMid = window.scrollY + offset;
+    let currentId   = '';
 
-    let currentId = '';
     sections.forEach(sec => {
       if (scrollMid >= sec.offsetTop) currentId = sec.id;
     });
@@ -106,8 +106,8 @@
       if (!target) return;
 
       e.preventDefault();
-      const navH   = navbar ? navbar.offsetHeight : 80;
-      const top    = target.getBoundingClientRect().top + window.scrollY - navH - 8;
+      const navH = navbar ? navbar.offsetHeight : 80;
+      const top  = target.getBoundingClientRect().top + window.scrollY - navH - 8;
       window.scrollTo({ top, behavior: 'smooth' });
     });
   });
@@ -116,33 +116,28 @@
   /* ====================================================================
      6. HERO ENTRANCE ANIMATIONS
   ==================================================================== */
-  // Use requestAnimationFrame so layout has settled before animating
   requestAnimationFrame(() => {
     const heroText   = $('[data-animate="hero-in"]');
     const heroVisual = $('[data-animate="hero-visual"]');
 
-    if (heroText) {
-      setTimeout(() => heroText.classList.add('is-visible'), 150);
-    }
-    if (heroVisual) {
-      setTimeout(() => heroVisual.classList.add('is-visible'), 350);
-    }
+    if (heroText)   setTimeout(() => heroText.classList.add('is-visible'),   150);
+    if (heroVisual) setTimeout(() => heroVisual.classList.add('is-visible'), 350);
   });
 
 
   /* ====================================================================
      7. SCROLL REVEAL — Intersection Observer
   ==================================================================== */
-  // Exclude hero-specific elements (handled above)
-  const revealEls = $$('[data-animate]:not([data-animate="hero-in"]):not([data-animate="hero-visual"])');
+  const revealEls = $$(
+    '[data-animate]:not([data-animate="hero-in"]):not([data-animate="hero-visual"])'
+  );
 
   if ('IntersectionObserver' in window) {
-    // Apply data-delay as CSS custom property for finer control
+
+    // Apply data-delay as CSS custom property for finer staggering control
     revealEls.forEach(el => {
       const delay = el.dataset.delay;
-      if (delay) {
-        el.style.transitionDelay = `${parseInt(delay, 10) / 1000}s`;
-      }
+      if (delay) el.style.transitionDelay = `${parseInt(delay, 10) / 1000}s`;
     });
 
     const observer = new IntersectionObserver(
@@ -150,7 +145,7 @@
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-visible');
-            observer.unobserve(entry.target); // fire once
+            observer.unobserve(entry.target); // trigger once
           }
         });
       },
@@ -160,39 +155,38 @@
     revealEls.forEach(el => observer.observe(el));
 
   } else {
-    // Fallback: show all immediately
+    // Fallback: show all immediately for non-supporting browsers
     revealEls.forEach(el => el.classList.add('is-visible'));
   }
 
 
   /* ====================================================================
-     8. SUBTLE PARALLAX — hero orbs on scroll
-     Only runs if user hasn't set prefers-reduced-motion
+     8. PARALLAX ORBS — subtle scroll effect on hero orbs
+        Skipped when user prefers reduced motion.
   ==================================================================== */
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  if (!prefersReduced) {
-    const orbs = $$('.hero-orb');
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const orbs        = $$('.hero-orb');
     const heroSection = $('#hero');
 
     if (orbs.length && heroSection) {
       let ticking = false;
 
       window.addEventListener('scroll', () => {
-        if (!ticking) {
-          requestAnimationFrame(() => {
-            const sy = window.scrollY;
-            // Only apply within the hero section height to keep it lightweight
-            if (sy < heroSection.offsetHeight * 1.2) {
-              orbs.forEach((orb, i) => {
-                const speed = 0.08 + i * 0.04;
-                orb.style.transform = `translateY(${sy * speed}px)`;
-              });
-            }
-            ticking = false;
-          });
-          ticking = true;
-        }
+        if (ticking) return;
+
+        requestAnimationFrame(() => {
+          const sy = window.scrollY;
+          // Only apply within hero height to stay lightweight
+          if (sy < heroSection.offsetHeight * 1.2) {
+            orbs.forEach((orb, i) => {
+              const speed = 0.08 + i * 0.04;
+              orb.style.transform = `translateY(${sy * speed}px)`;
+            });
+          }
+          ticking = false;
+        });
+
+        ticking = true;
       }, { passive: true });
     }
   }
@@ -200,25 +194,14 @@
 
   /* ====================================================================
      9. CRAFT IMAGE UPGRADE
-     If real images are loaded inside .craft-img-wrap,
-     hide the placeholder swatch automatically.
+        If real <img> elements are present inside .craft-img-wrap,
+        hide the placeholder swatch automatically.
   ==================================================================== */
   $$('.craft-img-wrap').forEach(wrap => {
-    const img = wrap.querySelector('img');
-    if (img) {
-      const swatch = wrap.querySelector('.craft-swatch');
-      if (swatch) swatch.style.display = 'none';
-    }
+    const img    = wrap.querySelector('img');
+    const swatch = wrap.querySelector('.craft-swatch');
+    if (img && swatch) swatch.style.display = 'none';
   });
 
 
-  /* ====================================================================
-     10. NAV LINK KEYBOARD ACCESSIBILITY
-     Allow Enter/Space on nav-link buttons (mobile accordion feel)
-  ==================================================================== */
-  navAnchors.forEach(a => {
-    a.setAttribute('tabindex', '0');
-  });
-
-
-})(); // IIFE end
+})(); // end IIFE
