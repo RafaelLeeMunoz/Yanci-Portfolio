@@ -20,6 +20,167 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- ================================================================
+       HERO CLUSTER — Orbit system
+       All rules are scoped to new classes; nothing in styles.css changes.
+  ================================================================ -->
+  <style>
+
+    /* ── Cluster container ─────────────────────────────────────────── */
+    .icon-cluster {
+      position: relative;
+      width: 380px;
+      height: 380px;
+      flex-shrink: 0;
+      /* overflow is intentionally visible so orbiting labels aren't clipped */
+    }
+
+    /* ── Decorative orbit-track ring lines (SVG backdrop) ─────────── */
+    .orbit-rings {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* ── Center: profile photo in hexagonal frame ──────────────────── */
+    .hex-photo-wrap {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 148px;
+      height: 148px;
+      clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+      overflow: hidden;
+      z-index: 10;
+      filter: drop-shadow(0 0 10px rgba(78, 205, 196, 0.65))
+              drop-shadow(0 0 28px rgba(78, 205, 196, 0.22));
+    }
+
+    .hex-photo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 14%;
+      display: block;
+    }
+
+    /* ── Orbit pivot ───────────────────────────────────────────────────
+     * How it works:
+     *  1. .orbit is a zero-size element anchored to the cluster center
+     *     (top: 50%; left: 50%). It spins using CSS animation.
+     *  2. Because .orbit has no size, its children are positioned
+     *     relative to the same center point.
+     *  3. .orbit-node is translated upward by the orbit radius so it
+     *     starts at 12 o'clock, then counter-rotates at the exact same
+     *     speed so the hex and label always face forward (stay upright).
+     *
+     * Spacing via negative animation-delay:
+     *  Starting angle α  →  delay = −(α ÷ 360) × duration
+     *  Inner ring (14 s CW):   180° node → −7 s
+     *  Outer ring (20 s CCW):  120° node → −6.667 s | 240° → −13.333 s
+     ──────────────────────────────────────────────────────────────── */
+    .orbit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+    }
+
+    /* Inner ring: 2 nodes, clockwise, 14 s */
+    .orbit--inner { animation: o-cw  14s linear infinite; }
+
+    /* Outer ring: 3 nodes, counter-clockwise, 20 s */
+    .orbit--outer { animation: o-ccw 20s linear infinite; }
+
+    /* ── Orbit arms (node + label combo that stays upright) ────────── */
+    .orbit-node {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /*
+     * Inner orbit radius (center-to-center) = 140 px
+     * Hex height = 78 px  →  half = 39 px
+     * top  = −(140 + 39) = −179 px
+     * left = −(78  ÷ 2)  =  −39 px
+     */
+    .orbit-node--inner {
+      top:  -179px;
+      left:  -39px;
+      animation: c-cw  14s linear infinite;
+    }
+
+    /*
+     * Outer orbit radius (center-to-center) = 188 px
+     * top  = −(188 + 39) = −227 px
+     * left = −39 px
+     */
+    .orbit-node--outer {
+      top:  -227px;
+      left:  -39px;
+      animation: c-ccw 20s linear infinite;
+    }
+
+    /* ── Keyframes ─────────────────────────────────────────────────── */
+    @keyframes o-cw  { to { transform: rotate( 360deg); } }
+    @keyframes o-ccw { to { transform: rotate(-360deg); } }
+    @keyframes c-cw  { to { transform: rotate(-360deg); } }
+    @keyframes c-ccw { to { transform: rotate( 360deg); } }
+
+    /* ── Hex node shape (orbiting variant) ─────────────────────────── */
+    .hex-node--sm {
+      width: 78px;
+      height: 78px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+      background: rgba(255, 255, 255, 0.13);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: rgba(255, 255, 255, 0.92);
+      transition: filter 0.28s ease;
+    }
+
+    .hex-node--sm:hover { filter: brightness(1.3); }
+    .hex-node--sm svg   { width: 38%; height: 38%; }
+
+    /* ── Labels beneath each hex ────────────────────────────────────── */
+    .hex-label {
+      font-family: 'Outfit', system-ui, sans-serif;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.72);
+      white-space: nowrap;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
+      line-height: 1;
+    }
+
+    /* ── Reduced-motion fallback ────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .orbit,
+      .orbit-node { animation: none !important; }
+
+      /* Distribute nodes at their starting positions when static */
+      .orbit--inner:nth-of-type(2) { transform: rotate(  0deg); }
+      .orbit--inner:nth-of-type(3) { transform: rotate(180deg); }
+      .orbit--outer:nth-of-type(4) { transform: rotate(  0deg); }
+      .orbit--outer:nth-of-type(5) { transform: rotate(120deg); }
+      .orbit--outer:nth-of-type(6) { transform: rotate(240deg); }
+    }
+
+  </style>
 </head>
 <body>
 
@@ -85,7 +246,6 @@
         <!-- Text content -->
         <div class="hero-text" data-animate="hero-in">
           <p class="hero-eyebrow">Healthcare · Informatics · Innovation</p>
-          <!-- REPLACE: Update name if needed -->
           <h1 class="hero-name" id="hero-heading">Yanci Tong</h1>
           <p class="hero-subtitle">
             Healthcare Professional
@@ -103,46 +263,123 @@
           </div>
         </div>
 
-        <!-- Decorative floating icon cluster -->
+        <!-- ============================================================
+             HERO VISUAL — orbiting hex cluster with profile photo
+             Structure:
+               .icon-cluster
+               ├─ .orbit-rings       (decorative SVG track lines)
+               ├─ .hex-photo-wrap    (center — Yanci's photo)
+               ├─ .orbit.orbit--inner × 2   (CW, 14 s, r=140 px)
+               │    └─ .orbit-node.orbit-node--inner
+               │         ├─ .hex-node--sm  (hex shape + icon)
+               │         └─ .hex-label     (text label)
+               └─ .orbit.orbit--outer × 3  (CCW, 20 s, r=188 px)
+                    └─ .orbit-node.orbit-node--outer
+                         ├─ .hex-node--sm
+                         └─ .hex-label
+        ============================================================ -->
         <div class="hero-visual" data-animate="hero-visual" aria-hidden="true">
           <div class="icon-cluster">
-            <!-- Center: ECG / heartbeat -->
-            <div class="hex-node node-center">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-                <polyline points="2,12 5,12 7.5,5 10.5,19 13,9 15,15 17.5,12 22,12"/>
-              </svg>
+
+            <!-- Decorative orbit-track guide circles -->
+            <svg class="orbit-rings" viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="190" cy="190" r="140"
+                fill="none" stroke="rgba(255,255,255,0.08)"
+                stroke-width="1" stroke-dasharray="5 7"/>
+              <circle cx="190" cy="190" r="188"
+                fill="none" stroke="rgba(255,255,255,0.05)"
+                stroke-width="1" stroke-dasharray="5 10"/>
+            </svg>
+
+            <!-- ── Center: profile photo in hexagonal glow frame ── -->
+            <div class="hex-photo-wrap">
+              <img src="Yanci.jfif" alt="Yanci Tong" class="hex-photo-img" />
             </div>
-            <!-- Top right: database -->
-            <div class="hex-node node-tr">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-                <ellipse cx="12" cy="5" rx="9" ry="3"/>
-                <path d="M21 12c0 1.66-4.03 3-9 3S3 13.66 3 12"/>
-                <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
-              </svg>
+
+            <!-- ════════════════════════════════════════════════════
+                 INNER ORBIT — clockwise, 14 s, radius 140 px
+                 2 nodes at 0° and 180°
+            ════════════════════════════════════════════════════ -->
+
+            <!-- Node 1 · EHR Systems · 0° (12 o'clock) -->
+            <div class="orbit orbit--inner">
+              <div class="orbit-node orbit-node--inner">
+                <div class="hex-node--sm">
+                  <!-- ECG / heartbeat waveform — represents EHR workflow -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                    <polyline points="2,12 5,12 7.5,5 10.5,19 13,9 15,15 17.5,12 22,12"/>
+                  </svg>
+                </div>
+                <span class="hex-label">EHR Systems</span>
+              </div>
             </div>
-            <!-- Bottom left: shield -->
-            <div class="hex-node node-bl">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              </svg>
+
+            <!-- Node 2 · HIPAA · 180° (6 o'clock) -->
+            <div class="orbit orbit--inner" style="animation-delay: -7s;">
+              <div class="orbit-node orbit-node--inner" style="animation-delay: -7s;">
+                <div class="hex-node--sm">
+                  <!-- Shield — represents HIPAA / data privacy -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                </div>
+                <span class="hex-label">HIPAA</span>
+              </div>
             </div>
-            <!-- Bottom right: clinical record -->
-            <div class="hex-node node-br">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-                <path d="M10.5 20H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10.5"/>
-                <circle cx="17" cy="17" r="5"/>
-                <path d="m15 19 4-4"/>
-              </svg>
+
+            <!-- ════════════════════════════════════════════════════
+                 OUTER ORBIT — counter-clockwise, 20 s, radius 188 px
+                 3 nodes at 0°, 120°, 240° (evenly spaced)
+            ════════════════════════════════════════════════════ -->
+
+            <!-- Node 3 · Health Data · 0° (12 o'clock) -->
+            <div class="orbit orbit--outer">
+              <div class="orbit-node orbit-node--outer">
+                <div class="hex-node--sm">
+                  <!-- Database cylinder — represents health data / analytics -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                    <path d="M21 12c0 1.66-4.03 3-9 3S3 13.66 3 12"/>
+                    <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+                  </svg>
+                </div>
+                <span class="hex-label">Health Data</span>
+              </div>
             </div>
-            <!-- Top left: DNA -->
-            <div class="hex-node node-tl">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-                <path d="M2 15c6.667-6 13.333 0 20-6M2 9c6.667 6 13.333 0 20 6"/>
-                <path d="M7 11.5v1M17 11.5v1M2 15h20M2 9h20"/>
-              </svg>
+
+            <!-- Node 4 · Informatics · 120° (4 o'clock) -->
+            <!-- delay = −(120/360 × 20) = −6.667 s -->
+            <div class="orbit orbit--outer" style="animation-delay: -6.667s;">
+              <div class="orbit-node orbit-node--outer" style="animation-delay: -6.667s;">
+                <div class="hex-node--sm">
+                  <!-- DNA double helix — represents clinical informatics -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                    <path d="M2 15c6.667-6 13.333 0 20-6M2 9c6.667 6 13.333 0 20 6"/>
+                    <path d="M7 11.5v1M17 11.5v1M2 15h20M2 9h20"/>
+                  </svg>
+                </div>
+                <span class="hex-label">Informatics</span>
+              </div>
             </div>
-          </div>
-        </div>
+
+            <!-- Node 5 · Clinical IT · 240° (8 o'clock) -->
+            <!-- delay = −(240/360 × 20) = −13.333 s -->
+            <div class="orbit orbit--outer" style="animation-delay: -13.333s;">
+              <div class="orbit-node orbit-node--outer" style="animation-delay: -13.333s;">
+                <div class="hex-node--sm">
+                  <!-- Clinical record + search — represents Clinical IT -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                    <path d="M10.5 20H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10.5"/>
+                    <circle cx="17" cy="17" r="5"/>
+                    <path d="m15 19 4-4"/>
+                  </svg>
+                </div>
+                <span class="hex-label">Clinical IT</span>
+              </div>
+            </div>
+
+          </div><!-- /icon-cluster -->
+        </div><!-- /hero-visual -->
 
       </div>
 
@@ -272,7 +509,6 @@
     ================================================================ -->
     <section id="experience" class="section experience-section" aria-labelledby="exp-heading">
 
-      <!-- Decorative hex pattern -->
       <div class="exp-hex-bg" aria-hidden="true">
         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
           <defs>
@@ -293,7 +529,6 @@
 
         <div class="timeline">
 
-          <!-- ---- Role 1 ---- -->
           <article class="timeline-item" data-animate="fade-up" data-delay="0"
                    aria-label="Medical Interpreter role">
             <div class="tl-marker" aria-hidden="true">
@@ -319,7 +554,6 @@
             </div>
           </article>
 
-          <!-- ---- Role 2 ---- -->
           <article class="timeline-item" data-animate="fade-up" data-delay="100"
                    aria-label="Outpatient Nurse role">
             <div class="tl-marker" aria-hidden="true">
@@ -345,7 +579,6 @@
             </div>
           </article>
 
-          <!-- ---- Role 3 ---- -->
           <article class="timeline-item" data-animate="fade-up" data-delay="200"
                    aria-label="Inpatient Nurse Intern role">
             <div class="tl-marker" aria-hidden="true">
@@ -370,7 +603,7 @@
             </div>
           </article>
 
-        </div><!-- /timeline -->
+        </div>
       </div>
     </section>
 
@@ -387,7 +620,6 @@
 
         <div class="edu-grid">
 
-          <!-- Featured: Master's -->
           <div class="edu-card edu-card--featured glass-card" data-animate="fade-up" data-delay="0">
             <div class="edu-icon edu-icon--featured" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
@@ -397,7 +629,6 @@
             </div>
             <div class="edu-body">
               <span class="edu-level">Master of Science</span>
-              <!-- REPLACE: Graduate degree and university -->
               <h3 class="edu-degree">Clinical Laboratory Science (Health Informatics)</h3>
               <p class="edu-school">University of Massachusetts, Lowell</p>
               <p class="edu-year">Graduated [2016]</p>
@@ -409,7 +640,6 @@
             </div>
           </div>
 
-          <!-- Undergraduate -->
           <div class="edu-card glass-card" data-animate="fade-up" data-delay="100">
             <div class="edu-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
@@ -419,14 +649,12 @@
             </div>
             <div class="edu-body">
               <span class="edu-level">Bachelor of Science</span>
-              <!-- REPLACE: Undergraduate degree and university -->
               <h3 class="edu-degree">Medicine in Nursing</h3>
               <p class="edu-school">Henan University of Science & Technology</p>
               <p class="edu-year">Graduated [2013]</p>
             </div>
           </div>
 
-          <!-- Certification 1 -->
           <div class="edu-card glass-card" data-animate="fade-up" data-delay="150">
             <div class="edu-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
@@ -436,14 +664,12 @@
             </div>
             <div class="edu-body">
               <span class="edu-level">Certification</span>
-              <!-- REPLACE: Certification name and issuing org -->
               <h3 class="edu-degree">[Healthcare IT Certification]</h3>
               <p class="edu-school">[Issuing Organization]</p>
               <p class="edu-year">[Year]</p>
             </div>
           </div>
 
-          <!-- Certification 2 -->
           <div class="edu-card glass-card" data-animate="fade-up" data-delay="200">
             <div class="edu-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
@@ -453,7 +679,6 @@
             </div>
             <div class="edu-body">
               <span class="edu-level">Certification</span>
-              <!-- REPLACE: Additional certification -->
               <h3 class="edu-degree">[Additional Certification]</h3>
               <p class="edu-school">[Issuing Organization]</p>
               <p class="edu-year">[Year]</p>
@@ -502,7 +727,6 @@
             </div>
             <h3 class="skill-cat-name">Healthcare Systems</h3>
             <div class="pill-cluster">
-              <!-- REPLACE: Update EHR systems you actually know -->
               <span class="pill">EHR / EMR</span>
               <span class="pill">Epic</span>
               <span class="pill">Cerner</span>
@@ -519,7 +743,6 @@
             </div>
             <h3 class="skill-cat-name">Data & Analytics</h3>
             <div class="pill-cluster">
-              <!-- REPLACE: Update to match your actual data tools -->
               <span class="pill">SQL</span>
               <span class="pill">Tableau</span>
               <span class="pill">Excel</span>
@@ -571,7 +794,6 @@
             </div>
             <h3 class="skill-cat-name">Tools & Platforms</h3>
             <div class="pill-cluster">
-              <!-- REPLACE: Update with your actual tools -->
               <span class="pill">Microsoft Office</span>
               <span class="pill">REDCap</span>
               <span class="pill">Google Workspace</span>
@@ -599,10 +821,6 @@
 
         <div class="craft-gallery">
 
-          <!-- REPLACE: Replace .craft-swatch divs with actual <img> tags.             -->
-          <!-- Example: <img src="images/craft-1.jpg" alt="Descriptive caption"        -->
-          <!--           class="craft-img" loading="lazy" />                           -->
-
           <figure class="craft-figure" data-animate="fade-up" data-delay="0">
             <div class="craft-img-wrap">
               <div class="craft-swatch sw-1" role="img" aria-label="Craft image placeholder 1">
@@ -613,7 +831,6 @@
                 </svg>
               </div>
             </div>
-            <!-- REPLACE: Add your caption -->
             <figcaption class="craft-cap">[Handmade piece — add your caption here]</figcaption>
           </figure>
 
@@ -625,7 +842,6 @@
                 </svg>
               </div>
             </div>
-            <!-- REPLACE: Add your caption -->
             <figcaption class="craft-cap">[Creative work — add your caption here]</figcaption>
           </figure>
 
@@ -637,7 +853,6 @@
                 </svg>
               </div>
             </div>
-            <!-- REPLACE: Add your caption -->
             <figcaption class="craft-cap">[Handcrafted item — add your caption here]</figcaption>
           </figure>
 
@@ -650,7 +865,6 @@
                 </svg>
               </div>
             </div>
-            <!-- REPLACE: Add your caption -->
             <figcaption class="craft-cap">[Art piece — add your caption here]</figcaption>
           </figure>
 
@@ -664,7 +878,6 @@
     ================================================================ -->
     <section id="contact" class="section contact-section" aria-labelledby="contact-heading">
 
-      <!-- Decorative background -->
       <div class="contact-hex-bg" aria-hidden="true">
         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
           <defs>
@@ -688,7 +901,6 @@
 
         <div class="contact-cards">
 
-          <!-- REPLACE: Update email address in href and visible text -->
           <a href="/cdn-cgi/l/email-protection#3168505f5258655e5f5671765c50585d1f525e5c"
              class="contact-card">
             <span class="cc-icon" aria-hidden="true">
@@ -703,7 +915,6 @@
             </span>
           </a>
 
-          <!-- REPLACE: Update LinkedIn URL and display text -->
           <a href="https://linkedin.com/in/yancitong" class="contact-card"
              target="_blank" rel="noopener noreferrer"
              aria-label="LinkedIn profile (opens in new tab)">
@@ -718,7 +929,6 @@
             <span class="cc-value">linkedin.com/in/yancitong</span>
           </a>
 
-          <!-- REPLACE: Update path to your actual resume PDF -->
           <a href="resume.pdf" class="contact-card"
              target="_blank" rel="noopener noreferrer"
              aria-label="Download résumé PDF (opens in new tab)">
@@ -738,7 +948,7 @@
       </div>
     </section>
 
-  </main><!-- /main -->
+  </main>
 
 
   <!-- ================================================================
@@ -763,7 +973,6 @@
             <circle cx="4" cy="4" r="2"/>
           </svg>
         </a>
-        <!-- REPLACE: Update email href below -->
         <a href="/cdn-cgi/l/email-protection#abf2cac5c8c2ffc4c5ccebecc6cac2c785c8c4c6"
            class="footer-link"
            aria-label="Send email">
