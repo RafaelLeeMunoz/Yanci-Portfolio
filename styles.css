@@ -547,11 +547,12 @@ button  { cursor: pointer; font-family: inherit; }
   gap: 14px;
 }
 
-/* Hero visual: floating hex icon cluster */
+/* Hero visual: portrait scene wrapper */
 .hero-visual {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 12px;
   opacity: 0;
   transform: translateX(28px);
 }
@@ -562,74 +563,210 @@ button  { cursor: pointer; font-family: inherit; }
   transition: opacity 0.85s var(--ease) 0.2s, transform 0.85s var(--ease) 0.2s;
 }
 
-.icon-cluster {
+/* ── Column: portrait stacked above chips ──────────────────────── */
+.hero-portrait-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+/* ── Portrait wrap: hosts the hex frame + decorative rings ──────── */
+.hex-portrait-wrap {
   position: relative;
-  width: 300px;
-  height: 300px;
   flex-shrink: 0;
 }
 
-/* Hexagonal nodes */
-.hex-node {
+/*
+ * Decorative soft circles behind the portrait — rendered as
+ * pseudo-elements so they travel with the float animation.
+ * Sizes chosen so rings sit just outside the hex frame edges.
+ */
+.hex-portrait-wrap::before,
+.hex-portrait-wrap::after {
+  content: '';
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* outer ring */
+.hex-portrait-wrap::before {
+  width: 330px;
+  height: 330px;
+  border: 1px solid rgba(78, 205, 196, 0.12);
+}
+
+/* inner ring — slightly brighter, closer to the frame */
+.hex-portrait-wrap::after {
+  width: 290px;
+  height: 290px;
+  border: 1px solid rgba(78, 205, 196, 0.20);
+}
+
+/* ── Outer hex: gradient fill = visible "border" + glow effect ─── */
+/*
+ * CUSTOMIZE: Change the gradient stop colors to tint the hex frame.
+ * The filter: drop-shadow creates the teal ambient glow around it.
+ */
+.hex-frame-outer {
+  position: relative;
+  z-index: 1;
+  width: 256px;
+  height: 256px;
+  clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+  background: linear-gradient(
+    150deg,
+    rgba(78, 205, 196, 0.88)  0%,
+    rgba(42, 157, 143, 0.76) 50%,
+    rgba(13,  59,  53, 0.68) 100%
+  );
   display: flex;
   align-items: center;
   justify-content: center;
+  /*
+   * drop-shadow on a clip-path element follows the hex silhouette
+   * exactly — producing a clean teal glow with no boxy bleed.
+   */
+  filter: drop-shadow(0 0 22px rgba(78, 205, 196, 0.52))
+          drop-shadow(0 0 54px rgba(78, 205, 196, 0.18));
+}
+
+/* ── Inner hex: clips the portrait image ────────────────────────── */
+.hex-frame-inner {
+  width: 240px;
+  height: 240px;
   clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.9);
-  transition: transform var(--tr);
+  overflow: hidden;
+  background: var(--t-950); /* dark fallback while image loads */
 }
 
-.hex-node:hover { transform: scale(1.1) !important; }
-
-.hex-node svg { width: 38%; height: 38%; }
-
-/* Individual node positions & sizes */
-.node-center {
-  width: 130px;
-  height: 130px;
-  top: 85px;
-  left: 85px;
-  background: rgba(255, 255, 255, 0.18);
-  animation: nodeFloat 8s ease-in-out infinite;
+/*
+ * Portrait image
+ * CUSTOMIZE: object-position controls face framing.
+ * "center 14%" works for a standard headshot — increase % to show
+ * more forehead, decrease to show more chin.
+ */
+.hex-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 14%;
+  display: block;
 }
 
-.node-tr {
-  width: 90px;
-  height: 90px;
-  top: 14px;
-  right: 18px;
-  animation: nodeFloat 11s ease-in-out infinite reverse;
+/* ── Skill chips grid ────────────────────────────────────────────── */
+/*
+ * CUSTOMIZE: Edit chip labels in index.html inside .chip-label spans.
+ * Add/remove <li class="skill-chip chip--N"> blocks as needed.
+ * max-width caps the wrap width so chips form neat rows.
+ */
+.skill-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  max-width: 340px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.node-bl {
-  width: 80px;
-  height: 80px;
-  bottom: 18px;
-  left: 14px;
-  animation: nodeFloat 13s ease-in-out infinite;
+/* Individual chip pill */
+.skill-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.19);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: rgba(255, 255, 255, 0.90);
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  /* initial hidden state — revealed via CSS animation below */
+  opacity: 0;
+  transform: translateY(10px);
+  transition: background var(--tr), border-color var(--tr);
 }
 
-.node-br {
-  width: 90px;
-  height: 90px;
-  bottom: 28px;
-  right: 36px;
-  animation: nodeFloat 9s ease-in-out infinite reverse;
+.skill-chip:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(78, 205, 196, 0.50);
 }
 
-.node-tl {
-  width: 70px;
-  height: 70px;
-  top: 26px;
-  left: 22px;
-  animation: nodeFloat 12s ease-in-out infinite;
+/* Icon slot inside each chip */
+.chip-icon {
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.82;
 }
 
-@keyframes nodeFloat {
+.chip-icon svg { width: 100%; height: 100%; }
+
+/* ── Keyframes ──────────────────────────────────────────────────── */
+
+/* Gentle up-and-down float for the portrait */
+@keyframes heroFloat {
   0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-9px); }
+  50%       { transform: translateY(-10px); }
+}
+
+/* Chip entrance: fade up from slight offset */
+@keyframes chipReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Motion-safe animations ─────────────────────────────────────── */
+/*
+ * All motion wrapped in no-preference so Windows "reduce animations"
+ * and iOS "Reduce Motion" settings are both respected correctly.
+ * The global reduce block in styles.css (animation-duration 0.01ms)
+ * won't conflict because these declarations only exist here.
+ */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* Portrait floats continuously */
+  .hex-portrait-wrap {
+    animation: heroFloat 6s ease-in-out infinite;
+  }
+
+  /*
+   * Chips fade up in sequence once the hero-visual div receives
+   * .is-visible (added by the IntersectionObserver in script.js
+   * — typically ~350 ms after page load).
+   * CUSTOMIZE: Adjust animation-delay values to change stagger speed.
+   */
+  .hero-visual.is-visible .skill-chip {
+    animation: chipReveal 0.55s var(--ease) forwards;
+  }
+
+  .hero-visual.is-visible .chip--1 { animation-delay: 0.30s; }
+  .hero-visual.is-visible .chip--2 { animation-delay: 0.44s; }
+  .hero-visual.is-visible .chip--3 { animation-delay: 0.58s; }
+  .hero-visual.is-visible .chip--4 { animation-delay: 0.72s; }
+  .hero-visual.is-visible .chip--5 { animation-delay: 0.86s; }
+  .hero-visual.is-visible .chip--6 { animation-delay: 1.00s; }
+}
+
+/* ── Reduced motion: chips visible immediately, no float ────────── */
+@media (prefers-reduced-motion: reduce) {
+  .skill-chip {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 /* Scroll nudge */
@@ -1314,6 +1451,27 @@ button  { cursor: pointer; font-family: inherit; }
 @media (max-width: 1024px) {
   :root { --section-py: 88px; }
 
+  /* Slightly scale down portrait on tablet */
+  .hex-frame-outer {
+    width: 220px;
+    height: 220px;
+  }
+
+  .hex-frame-inner {
+    width: 206px;
+    height: 206px;
+  }
+
+  .hex-portrait-wrap::before {
+    width: 286px;
+    height: 286px;
+  }
+
+  .hex-portrait-wrap::after {
+    width: 252px;
+    height: 252px;
+  }
+
   .skills-grid   { grid-template-columns: repeat(2, 1fr); }
   .craft-gallery { grid-template-columns: repeat(2, 1fr); }
 }
@@ -1376,11 +1534,49 @@ button  { cursor: pointer; font-family: inherit; }
   /* Hero */
   .hero-layout {
     grid-template-columns: 1fr;
-    gap: 0;
+    gap: 48px;
     text-align: center;
   }
 
-  .hero-visual  { display: none; }
+  /* Portrait visual now shows on mobile — scaled down */
+  .hero-visual {
+    padding-top: 0;
+    justify-content: center;
+  }
+
+  /* Scale the hex frame down for mobile viewports */
+  .hex-frame-outer {
+    width: 200px;
+    height: 200px;
+  }
+
+  .hex-frame-inner {
+    width: 186px;
+    height: 186px;
+  }
+
+  /* Scale the decorative rings to match smaller frame */
+  .hex-portrait-wrap::before {
+    width: 264px;
+    height: 264px;
+  }
+
+  .hex-portrait-wrap::after {
+    width: 230px;
+    height: 230px;
+  }
+
+  /* Chips wrap tightly on mobile */
+  .skill-chips {
+    max-width: 300px;
+    gap: 8px;
+  }
+
+  .skill-chip {
+    font-size: 0.72rem;
+    padding: 7px 13px;
+  }
+
   .hero-tagline { margin-inline: auto; }
   .hero-actions { justify-content: center; }
 

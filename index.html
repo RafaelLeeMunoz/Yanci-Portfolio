@@ -21,193 +21,7 @@
 
   <link rel="stylesheet" href="styles.css" />
 
-  <!-- ================================================================
-       HERO CLUSTER — Orbit system
-       All rules are scoped to new classes; nothing in styles.css changes.
-  ================================================================ -->
-  <style>
-
-    /* ── Cluster container ─────────────────────────────────────────── */
-    .icon-cluster {
-      position: relative;
-      width: 380px;
-      height: 380px;
-      flex-shrink: 0;
-      /* overflow intentionally visible so orbiting labels aren't clipped */
-    }
-
-    /* ── Decorative orbit-track ring lines (SVG backdrop) ─────────── */
-    .orbit-rings {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-
-    /* ── Center: profile photo in hexagonal frame ──────────────────────
-     * Size: 200px (radius 100px).
-     * Safety check: inner orbit nodes have their nearest edge at
-     * 140px − 39px = 101px from center, giving 1px clearance.
-     ──────────────────────────────────────────────────────────────── */
-    .hex-photo-wrap {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 200px;
-      height: 200px;
-      clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
-      overflow: hidden;
-      z-index: 10;
-      filter: drop-shadow(0 0 12px rgba(78, 205, 196, 0.7))
-              drop-shadow(0 0 32px rgba(78, 205, 196, 0.25));
-    }
-
-    .hex-photo-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 14%;
-      display: block;
-    }
-
-    /* ── Orbit pivot ───────────────────────────────────────────────────
-     * .orbit is a zero-size element anchored to the cluster center.
-     * Its children are positioned relative to this center point.
-     * Each .orbit-node is translated UP by the orbit radius so it
-     * starts at 12 o'clock, then counter-rotates at the same speed
-     * so the hex and label always face forward (stay upright).
-     *
-     * Spacing via negative animation-delay:
-     *   angle α → delay = −(α ÷ 360) × duration
-     *   Inner (14 s CW):  180° → −7 s
-     *   Outer (20 s CCW): 120° → −6.667 s | 240° → −13.333 s
-     ──────────────────────────────────────────────────────────────── */
-    .orbit {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-    }
-
-    /* ── Orbit arms (node + label that stays upright) ──────────────── */
-    .orbit-node {
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /*
-     * Inner orbit radius = 140 px | hex half-height = 39 px
-     * top  = −(140 + 39) = −179 px | left = −(78 ÷ 2) = −39 px
-     */
-    .orbit-node--inner {
-      top:  -179px;
-      left:  -39px;
-    }
-
-    /*
-     * Outer orbit radius = 188 px | hex half-height = 39 px
-     * top  = −(188 + 39) = −227 px | left = −39 px
-     */
-    .orbit-node--outer {
-      top:  -227px;
-      left:  -39px;
-    }
-
-    /* ── Keyframes — defined outside any media query ───────────────── */
-    @keyframes o-cw  { to { transform: rotate( 360deg); } }
-    @keyframes o-ccw { to { transform: rotate(-360deg); } }
-    @keyframes c-cw  { to { transform: rotate(-360deg); } }
-    @keyframes c-ccw { to { transform: rotate( 360deg); } }
-
-    /* ── Hex node shape (orbiting variant) ─────────────────────────── */
-    .hex-node--sm {
-      width: 78px;
-      height: 78px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
-      background: rgba(255, 255, 255, 0.13);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      color: rgba(255, 255, 255, 0.92);
-      transition: filter 0.28s ease;
-    }
-
-    .hex-node--sm:hover { filter: brightness(1.3); }
-    .hex-node--sm svg   { width: 38%; height: 38%; }
-
-    /* ── Labels beneath each hex ────────────────────────────────────── */
-    .hex-label {
-      font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.72);
-      white-space: nowrap;
-      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
-      line-height: 1;
-    }
-
-    /* ── Orbit animations — ONLY when motion is allowed ───────────────
-     *
-     * ROOT CAUSE OF THE PC BUG:
-     * styles.css contains a `prefers-reduced-motion: reduce` block that
-     * applies `animation-duration: 0.01ms !important` and
-     * `animation-iteration-count: 1 !important` to every element via *.
-     * Windows PCs commonly have "Show animations" disabled in
-     * Settings → Accessibility → Visual effects, which activates this
-     * media query. The orbit animations declared outside a media query
-     * are NOT protected from this override, so they run once in 0.01ms
-     * and appear completely frozen.
-     *
-     * FIX: Wrap all orbit animation declarations inside
-     * `(prefers-reduced-motion: no-preference)`. This makes them
-     * completely invisible to the reduced-motion block in styles.css —
-     * they only exist when the user has NOT requested reduced motion.
-     ──────────────────────────────────────────────────────────────── */
-    @media (prefers-reduced-motion: no-preference) {
-      .orbit--inner      { animation: o-cw  14s linear infinite; }
-      .orbit--outer      { animation: o-ccw 20s linear infinite; }
-      .orbit-node--inner { animation: c-cw  14s linear infinite; }
-      .orbit-node--outer { animation: c-ccw 20s linear infinite; }
-    }
-
-    /* ── Reduced-motion: static node positions ─────────────────────────
-     * When motion is reduced (common on Windows), show all five nodes
-     * spread evenly around the cluster in their correct positions.
-     *
-     * div:nth-of-type counts only <div> siblings (SVG is excluded):
-     *   nth-of-type(1) = .hex-photo-wrap
-     *   nth-of-type(2) = orbit--inner  (EHR Systems,  0°)   ← default, no override
-     *   nth-of-type(3) = orbit--inner  (HIPAA,       180°)
-     *   nth-of-type(4) = orbit--outer  (Health Data,   0°)  ← default, no override
-     *   nth-of-type(5) = orbit--outer  (Informatics,  120°)
-     *   nth-of-type(6) = orbit--outer  (Clinical IT,  240°)
-     ──────────────────────────────────────────────────────────────── */
-    @media (prefers-reduced-motion: reduce) {
-      /* HIPAA: 180° / 6 o'clock */
-      .icon-cluster > div:nth-of-type(3)               { transform: rotate(180deg); }
-      .icon-cluster > div:nth-of-type(3) > .orbit-node { transform: rotate(-180deg); }
-
-      /* Informatics: 120° / 4 o'clock */
-      .icon-cluster > div:nth-of-type(5)               { transform: rotate(120deg); }
-      .icon-cluster > div:nth-of-type(5) > .orbit-node { transform: rotate(-120deg); }
-
-      /* Clinical IT: 240° / 8 o'clock */
-      .icon-cluster > div:nth-of-type(6)               { transform: rotate(240deg); }
-      .icon-cluster > div:nth-of-type(6) > .orbit-node { transform: rotate(-240deg); }
-    }
-
-  </style>
+  <!-- All hero visual styles now live in styles.css — no inline overrides needed -->
 </head>
 <body>
 
@@ -291,121 +105,114 @@
         </div>
 
         <!-- ============================================================
-             HERO VISUAL — orbiting hex cluster with profile photo
-             Structure:
-               .icon-cluster
-               ├─ .orbit-rings       (decorative SVG track lines)
-               ├─ .hex-photo-wrap    (center — Yanci's photo)
-               ├─ .orbit.orbit--inner × 2   (CW, 14 s, r=140 px)
-               │    └─ .orbit-node.orbit-node--inner
-               │         ├─ .hex-node--sm  (hex shape + icon)
-               │         └─ .hex-label     (text label)
-               └─ .orbit.orbit--outer × 3  (CCW, 20 s, r=188 px)
-                    └─ .orbit-node.orbit-node--outer
-                         ├─ .hex-node--sm
-                         └─ .hex-label
+             HERO VISUAL — Portrait in hex frame + skill chip badges
+             Design: centered portrait with soft glow, chips below.
+             No spinning, orbiting, or screen-size-dependent math.
         ============================================================ -->
-        <div class="hero-visual" data-animate="hero-visual" aria-hidden="true">
-          <div class="icon-cluster">
+        <div class="hero-visual" data-animate="hero-visual">
+          <div class="hero-portrait-scene">
 
-            <!-- Decorative orbit-track guide circles -->
-            <svg class="orbit-rings" viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="190" cy="190" r="140"
-                fill="none" stroke="rgba(255,255,255,0.08)"
-                stroke-width="1" stroke-dasharray="5 7"/>
-              <circle cx="190" cy="190" r="188"
-                fill="none" stroke="rgba(255,255,255,0.05)"
-                stroke-width="1" stroke-dasharray="5 10"/>
-            </svg>
-
-            <!-- ── Center: profile photo in hexagonal glow frame ── -->
-            <div class="hex-photo-wrap">
-              <img src="Yanci.jfif" alt="Yanci Tong" class="hex-photo-img" />
+            <!-- ── Portrait in glowing hex frame ──────────────────────
+                 CUSTOMIZE: Replace src="Yanci.jfif" with your photo.
+                 Adjust .hex-portrait-img { object-position } in
+                 styles.css to fine-tune face framing (e.g. "center 20%").
+            ────────────────────────────────────────────────────────── -->
+            <div class="hex-portrait-wrap" aria-hidden="true">
+              <div class="hex-frame-outer">
+                <div class="hex-frame-inner">
+                  <img src="Yanci.jfif"
+                       alt=""
+                       class="hex-portrait-img" />
+                </div>
+              </div>
             </div>
 
-            <!-- ════════════════════════════════════════════════════
-                 INNER ORBIT — clockwise, 14 s, radius 140 px
-                 2 nodes at 0° and 180°
-            ════════════════════════════════════════════════════ -->
+            <!-- ── Skill badges ────────────────────────────────────────
+                 CUSTOMIZE: Edit text inside each <span class="chip-label">
+                 to rename skills. Add or remove <li> blocks freely —
+                 they wrap automatically on all screen sizes.
+                 Keep between 4–8 chips for the best visual balance.
+            ────────────────────────────────────────────────────────── -->
+            <ul class="skill-chips" aria-label="Core competencies">
 
-            <!-- Node 1 · EHR Systems · 0° (12 o'clock) -->
-            <div class="orbit orbit--inner">
-              <div class="orbit-node orbit-node--inner">
-                <div class="hex-node--sm">
-                  <!-- ECG / heartbeat waveform — represents EHR workflow -->
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <!-- Chip 1 — EHR Systems -->
+              <li class="skill-chip chip--1">
+                <span class="chip-icon" aria-hidden="true">
+                  <!-- Heartbeat / EHR waveform -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="2,12 5,12 7.5,5 10.5,19 13,9 15,15 17.5,12 22,12"/>
                   </svg>
-                </div>
-                <span class="hex-label">EHR Systems</span>
-              </div>
-            </div>
+                </span>
+                <span class="chip-label">EHR Systems</span>
+              </li>
 
-            <!-- Node 2 · HIPAA · 180° (6 o'clock) -->
-            <div class="orbit orbit--inner" style="animation-delay: -7s;">
-              <div class="orbit-node orbit-node--inner" style="animation-delay: -7s;">
-                <div class="hex-node--sm">
-                  <!-- Shield — represents HIPAA / data privacy -->
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <!-- Chip 2 — HIPAA -->
+              <li class="skill-chip chip--2">
+                <span class="chip-icon" aria-hidden="true">
+                  <!-- Shield — compliance & privacy -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                   </svg>
-                </div>
-                <span class="hex-label">HIPAA</span>
-              </div>
-            </div>
+                </span>
+                <span class="chip-label">HIPAA</span>
+              </li>
 
-            <!-- ════════════════════════════════════════════════════
-                 OUTER ORBIT — counter-clockwise, 20 s, radius 188 px
-                 3 nodes at 0°, 120°, 240° (evenly spaced)
-            ════════════════════════════════════════════════════ -->
+              <!-- Chip 3 — Health Informatics -->
+              <li class="skill-chip chip--3">
+                <span class="chip-icon" aria-hidden="true">
+                  <!-- Sine-wave / signal — informatics & data -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 15c6.667-6 13.333 0 20-6M2 9c6.667 6 13.333 0 20 6"/>
+                  </svg>
+                </span>
+                <span class="chip-label">Health Informatics</span>
+              </li>
 
-            <!-- Node 3 · Health Data · 0° (12 o'clock) -->
-            <div class="orbit orbit--outer">
-              <div class="orbit-node orbit-node--outer">
-                <div class="hex-node--sm">
-                  <!-- Database cylinder — represents health data / analytics -->
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <!-- Chip 4 — Clinical IT -->
+              <li class="skill-chip chip--4">
+                <span class="chip-icon" aria-hidden="true">
+                  <!-- Document + search — clinical records -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.5 20H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10.5"/>
+                    <circle cx="17" cy="17" r="5"/>
+                  </svg>
+                </span>
+                <span class="chip-label">Clinical IT</span>
+              </li>
+
+              <!-- Chip 5 — Health Data -->
+              <li class="skill-chip chip--5">
+                <span class="chip-icon" aria-hidden="true">
+                  <!-- Database cylinder — health data & analytics -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                     <ellipse cx="12" cy="5" rx="9" ry="3"/>
                     <path d="M21 12c0 1.66-4.03 3-9 3S3 13.66 3 12"/>
                     <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
                   </svg>
-                </div>
-                <span class="hex-label">Health Data</span>
-              </div>
-            </div>
+                </span>
+                <span class="chip-label">Health Data</span>
+              </li>
 
-            <!-- Node 4 · Informatics · 120° (4 o'clock) -->
-            <!-- delay = −(120/360 × 20) = −6.667 s -->
-            <div class="orbit orbit--outer" style="animation-delay: -6.667s;">
-              <div class="orbit-node orbit-node--outer" style="animation-delay: -6.667s;">
-                <div class="hex-node--sm">
-                  <!-- DNA double helix — represents clinical informatics -->
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-                    <path d="M2 15c6.667-6 13.333 0 20-6M2 9c6.667 6 13.333 0 20 6"/>
-                    <path d="M7 11.5v1M17 11.5v1M2 15h20M2 9h20"/>
+              <!-- Chip 6 — Workflow Optimization -->
+              <li class="skill-chip chip--6">
+                <span class="chip-icon" aria-hidden="true">
+                  <!-- Activity lines — process & workflow -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
                   </svg>
-                </div>
-                <span class="hex-label">Informatics</span>
-              </div>
-            </div>
+                </span>
+                <span class="chip-label">Workflow Optimization</span>
+              </li>
 
-            <!-- Node 5 · Clinical IT · 240° (8 o'clock) -->
-            <!-- delay = −(240/360 × 20) = −13.333 s -->
-            <div class="orbit orbit--outer" style="animation-delay: -13.333s;">
-              <div class="orbit-node orbit-node--outer" style="animation-delay: -13.333s;">
-                <div class="hex-node--sm">
-                  <!-- Clinical record + search — represents Clinical IT -->
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-                    <path d="M10.5 20H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10.5"/>
-                    <circle cx="17" cy="17" r="5"/>
-                    <path d="m15 19 4-4"/>
-                  </svg>
-                </div>
-                <span class="hex-label">Clinical IT</span>
-              </div>
-            </div>
+            </ul>
 
-          </div><!-- /icon-cluster -->
+          </div><!-- /hero-portrait-scene -->
         </div><!-- /hero-visual -->
 
       </div>
