@@ -33,7 +33,7 @@
       width: 380px;
       height: 380px;
       flex-shrink: 0;
-      /* overflow is intentionally visible so orbiting labels aren't clipped */
+      /* overflow intentionally visible so orbiting labels aren't clipped */
     }
 
     /* ── Decorative orbit-track ring lines (SVG backdrop) ─────────── */
@@ -45,19 +45,23 @@
       pointer-events: none;
     }
 
-    /* ── Center: profile photo in hexagonal frame ──────────────────── */
+    /* ── Center: profile photo in hexagonal frame ──────────────────────
+     * Size: 200px (radius 100px).
+     * Safety check: inner orbit nodes have their nearest edge at
+     * 140px − 39px = 101px from center, giving 1px clearance.
+     ──────────────────────────────────────────────────────────────── */
     .hex-photo-wrap {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 148px;
-      height: 148px;
+      width: 200px;
+      height: 200px;
       clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
       overflow: hidden;
       z-index: 10;
-      filter: drop-shadow(0 0 10px rgba(78, 205, 196, 0.65))
-              drop-shadow(0 0 28px rgba(78, 205, 196, 0.22));
+      filter: drop-shadow(0 0 12px rgba(78, 205, 196, 0.7))
+              drop-shadow(0 0 32px rgba(78, 205, 196, 0.25));
     }
 
     .hex-photo-img {
@@ -69,19 +73,16 @@
     }
 
     /* ── Orbit pivot ───────────────────────────────────────────────────
-     * How it works:
-     *  1. .orbit is a zero-size element anchored to the cluster center
-     *     (top: 50%; left: 50%). It spins using CSS animation.
-     *  2. Because .orbit has no size, its children are positioned
-     *     relative to the same center point.
-     *  3. .orbit-node is translated upward by the orbit radius so it
-     *     starts at 12 o'clock, then counter-rotates at the exact same
-     *     speed so the hex and label always face forward (stay upright).
+     * .orbit is a zero-size element anchored to the cluster center.
+     * Its children are positioned relative to this center point.
+     * Each .orbit-node is translated UP by the orbit radius so it
+     * starts at 12 o'clock, then counter-rotates at the same speed
+     * so the hex and label always face forward (stay upright).
      *
      * Spacing via negative animation-delay:
-     *  Starting angle α  →  delay = −(α ÷ 360) × duration
-     *  Inner ring (14 s CW):   180° node → −7 s
-     *  Outer ring (20 s CCW):  120° node → −6.667 s | 240° → −13.333 s
+     *   angle α → delay = −(α ÷ 360) × duration
+     *   Inner (14 s CW):  180° → −7 s
+     *   Outer (20 s CCW): 120° → −6.667 s | 240° → −13.333 s
      ──────────────────────────────────────────────────────────────── */
     .orbit {
       position: absolute;
@@ -91,13 +92,7 @@
       height: 0;
     }
 
-    /* Inner ring: 2 nodes, clockwise, 14 s */
-    .orbit--inner { animation: o-cw  14s linear infinite; }
-
-    /* Outer ring: 3 nodes, counter-clockwise, 20 s */
-    .orbit--outer { animation: o-ccw 20s linear infinite; }
-
-    /* ── Orbit arms (node + label combo that stays upright) ────────── */
+    /* ── Orbit arms (node + label that stays upright) ──────────────── */
     .orbit-node {
       position: absolute;
       display: flex;
@@ -107,29 +102,24 @@
     }
 
     /*
-     * Inner orbit radius (center-to-center) = 140 px
-     * Hex height = 78 px  →  half = 39 px
-     * top  = −(140 + 39) = −179 px
-     * left = −(78  ÷ 2)  =  −39 px
+     * Inner orbit radius = 140 px | hex half-height = 39 px
+     * top  = −(140 + 39) = −179 px | left = −(78 ÷ 2) = −39 px
      */
     .orbit-node--inner {
       top:  -179px;
       left:  -39px;
-      animation: c-cw  14s linear infinite;
     }
 
     /*
-     * Outer orbit radius (center-to-center) = 188 px
-     * top  = −(188 + 39) = −227 px
-     * left = −39 px
+     * Outer orbit radius = 188 px | hex half-height = 39 px
+     * top  = −(188 + 39) = −227 px | left = −39 px
      */
     .orbit-node--outer {
       top:  -227px;
       left:  -39px;
-      animation: c-ccw 20s linear infinite;
     }
 
-    /* ── Keyframes ─────────────────────────────────────────────────── */
+    /* ── Keyframes — defined outside any media query ───────────────── */
     @keyframes o-cw  { to { transform: rotate( 360deg); } }
     @keyframes o-ccw { to { transform: rotate(-360deg); } }
     @keyframes c-cw  { to { transform: rotate(-360deg); } }
@@ -167,17 +157,54 @@
       line-height: 1;
     }
 
-    /* ── Reduced-motion fallback ────────────────────────────────────── */
-    @media (prefers-reduced-motion: reduce) {
-      .orbit,
-      .orbit-node { animation: none !important; }
+    /* ── Orbit animations — ONLY when motion is allowed ───────────────
+     *
+     * ROOT CAUSE OF THE PC BUG:
+     * styles.css contains a `prefers-reduced-motion: reduce` block that
+     * applies `animation-duration: 0.01ms !important` and
+     * `animation-iteration-count: 1 !important` to every element via *.
+     * Windows PCs commonly have "Show animations" disabled in
+     * Settings → Accessibility → Visual effects, which activates this
+     * media query. The orbit animations declared outside a media query
+     * are NOT protected from this override, so they run once in 0.01ms
+     * and appear completely frozen.
+     *
+     * FIX: Wrap all orbit animation declarations inside
+     * `(prefers-reduced-motion: no-preference)`. This makes them
+     * completely invisible to the reduced-motion block in styles.css —
+     * they only exist when the user has NOT requested reduced motion.
+     ──────────────────────────────────────────────────────────────── */
+    @media (prefers-reduced-motion: no-preference) {
+      .orbit--inner      { animation: o-cw  14s linear infinite; }
+      .orbit--outer      { animation: o-ccw 20s linear infinite; }
+      .orbit-node--inner { animation: c-cw  14s linear infinite; }
+      .orbit-node--outer { animation: c-ccw 20s linear infinite; }
+    }
 
-      /* Distribute nodes at their starting positions when static */
-      .orbit--inner:nth-of-type(2) { transform: rotate(  0deg); }
-      .orbit--inner:nth-of-type(3) { transform: rotate(180deg); }
-      .orbit--outer:nth-of-type(4) { transform: rotate(  0deg); }
-      .orbit--outer:nth-of-type(5) { transform: rotate(120deg); }
-      .orbit--outer:nth-of-type(6) { transform: rotate(240deg); }
+    /* ── Reduced-motion: static node positions ─────────────────────────
+     * When motion is reduced (common on Windows), show all five nodes
+     * spread evenly around the cluster in their correct positions.
+     *
+     * div:nth-of-type counts only <div> siblings (SVG is excluded):
+     *   nth-of-type(1) = .hex-photo-wrap
+     *   nth-of-type(2) = orbit--inner  (EHR Systems,  0°)   ← default, no override
+     *   nth-of-type(3) = orbit--inner  (HIPAA,       180°)
+     *   nth-of-type(4) = orbit--outer  (Health Data,   0°)  ← default, no override
+     *   nth-of-type(5) = orbit--outer  (Informatics,  120°)
+     *   nth-of-type(6) = orbit--outer  (Clinical IT,  240°)
+     ──────────────────────────────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      /* HIPAA: 180° / 6 o'clock */
+      .icon-cluster > div:nth-of-type(3)               { transform: rotate(180deg); }
+      .icon-cluster > div:nth-of-type(3) > .orbit-node { transform: rotate(-180deg); }
+
+      /* Informatics: 120° / 4 o'clock */
+      .icon-cluster > div:nth-of-type(5)               { transform: rotate(120deg); }
+      .icon-cluster > div:nth-of-type(5) > .orbit-node { transform: rotate(-120deg); }
+
+      /* Clinical IT: 240° / 8 o'clock */
+      .icon-cluster > div:nth-of-type(6)               { transform: rotate(240deg); }
+      .icon-cluster > div:nth-of-type(6) > .orbit-node { transform: rotate(-240deg); }
     }
 
   </style>
